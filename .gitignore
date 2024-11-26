@@ -27,6 +27,7 @@ share/python-wheels/
 MANIFEST
 
 # Output folder
+output/
 !output/README.md
 
 # PyInstaller
