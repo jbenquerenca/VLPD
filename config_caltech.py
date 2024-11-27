@@ -23,7 +23,7 @@ class ConfigCaltech(object):
         self.alpha = 0.999
 
         # dataset
-        self.root_path = '/root/data/caltech/'     # the path to your caltech dataset  
+        self.root_path = 'data/caltech/'     # the path to your caltech dataset  
 
         # setting for data augmentation
         self.use_horizontal_flips = True
@@ -49,7 +49,7 @@ class ConfigCaltech(object):
 
         self.templates = ['a picture of {}']
         self.classnames = ['ground', 'building', 'tree', 'human', 'car', 'bus', 'bicycle', 'truck', 'traffic sign', 'sky']
-        self.clip_weight = '/root/RN50.pt'
+        self.clip_weight = 'RN50.pt'
         
         self.seg_lambda = 1e2
         self.contrast_lambda = 1e-4

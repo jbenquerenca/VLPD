@@ -26,6 +26,12 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Backbone checkpoint
+RN50.pt
+
+# Data folders
+data/caltech/
+
 # Output folder
 output/
 !output/README.md

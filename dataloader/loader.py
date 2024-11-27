@@ -127,6 +127,7 @@ class Caltech(Dataset):
         img_data = self.dataset[item]
         file_path:str = img_data['filepath']
         file_path = os.path.join(self.root_dir, '/'.join(file_path.split('/')[-3:]))
+        file_path = f'{file_path.split(".")[0]}.png'
         img = cv2.imread(file_path)
 
         if self.type in ['train_gt', 'train_nogt']:
