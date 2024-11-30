@@ -1,6 +1,7 @@
 from __future__ import division
 import os
 import numpy as np
+import json
 from scipy import io as scio
 import pickle
 
@@ -69,3 +70,26 @@ def get_caltech(root_dir='data/caltech', type='train_gt'):
         cache_data = pickle.load(fid, encoding='iso-8859-1')
     
     return cache_data
+
+def get_tju(root_dir='data/tju', split='train'):
+    all_img_path = os.path.join(root_dir, "images")
+    all_anno_path = os.path.join(root_dir, "annotations")
+    anno_path = os.path.join(all_anno_path, f"{split}.json")
+    image_data = dict()
+    valid_count = 0
+    iggt_count = 0
+    box_count = 0
+    with open(anno_path) as f: anno_data = json.load(f)
+    for im in anno_data["images"]: 
+        image_data[im["id"]] = dict(filepath=os.path.join(all_img_path, im["file_name"]), bboxes=list(), ignoreareas=list())
+    for anno in anno_data["annotations"]:
+        bbox = list(map(int, anno["bbox"]))
+        bbox = np.array([bbox[0], bbox[1], bbox[0]+bbox[2], bbox[1]+bbox[3]])
+        ignore = 1 if "ignore" in anno and anno["ignore"] == 1 else 0
+        if ignore or anno["iscrowd"] == 1: image_data[anno["image_id"]]["ignoreareas"].append(bbox)
+        else: image_data[anno["image_id"]]["bboxes"].append(bbox)
+    for im_dict in image_data.values():
+        im_dict["bboxes"] = np.array(im_dict["bboxes"])
+        im_dict["ignoreareas"] = np.array(im_dict["ignoreareas"])
+    return list(image_data.values())
+

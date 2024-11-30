@@ -12,7 +12,7 @@ from torch.utils.data import Dataset
 from config import Config
 from dataloader import data_augment
 from lib.gen_pseudo_mask import ResNet50_CLIP
-from .load_data import get_citypersons, get_caltech
+from .load_data import get_citypersons, get_caltech, get_tju
 # from memory_profiler import profile
 import pdb
 from torch.nn import functional as F
@@ -156,3 +156,33 @@ class Caltech(Dataset):
 
     def __len__(self):
         return self.dataset_len
+
+class TJU(Dataset):
+    def __init__(self, path, split, config: Config, transform=None):
+        self.dataset = get_tju(root_dir=path, split=split)
+        self.dataset_len = len(self.dataset)
+        self.type = split
+        self.config = config
+        self.transform = transform
+    def __getitem__(self, item):
+        img_data = self.dataset[item]
+        img = cv2.imread(img_data['filepath'])
+        if self.type == 'train':
+            img_data, x_img = data_augment.augment(self.dataset[item], self.config, img)
+            gts = img_data['bboxes'].copy()
+            igs = img_data['ignoreareas'].copy()
+            y_center, y_height, y_offset = calc_gt_center(self.config.size_train, gts, igs, radius=2, stride=self.config.down)
+            x_img = x_img.astype(np.float32)
+            x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
+            x_img = (x_img - self.config.norm_mean) / self.config.norm_std
+            x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
+            return x_img, [y_center, y_height, y_offset]
+        else:
+            (h, w) = self.config.size_test
+            img = cv2.resize(img, (w, h))
+            x_img = img.astype(np.float32)
+            x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
+            x_img = (x_img - self.config.norm_mean) / self.config.norm_std
+            x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
+            return x_img
+    def __len__(self): return self.dataset_len

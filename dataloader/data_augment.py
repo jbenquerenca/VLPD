@@ -135,9 +135,12 @@ def augment(img_data, c, img):
     igs = np.copy(img_data_aug['ignoreareas'])
 
     img, gts, igs = resize_image(img, gts, igs, scale=(0.4, 1.5))
+    print(f"{img.shape[0]=} {c.size_train[0]=}")
     if img.shape[0] >= c.size_train[0]:
+        print("crop")
         img, gts, igs = random_crop(img, gts, igs, c.size_train, limit=16)
     else:
+        print("pave")
         img, gts, igs = random_pave(img, gts, igs, c.size_train, limit=16)
 
     img_data_aug['bboxes'] = gts

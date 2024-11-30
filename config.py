@@ -23,13 +23,13 @@ class Config(object):
         self.alpha = 0.999
 
         # dataset
-        self.root_path = '/root/data/cityperson'     # the path to your citypersons dataset  
+        self.root_path = 'data/TJU-DHD-Traffic'     # the path to your citypersons dataset  
 
         # setting for data augmentation
         self.use_horizontal_flips = True
         self.brightness = (0.5, 2, 0.5)
-        self.size_train = (640, 1280)
-        self.size_test = (1024, 2048)    
+        self.size_train = (750, 1015)
+        self.size_test = (1200, 1624)    
 
         # image channel-wise mean to subtract, the order is BGR
         self.norm_mean = [123.675, 116.28, 103.53]
@@ -49,7 +49,7 @@ class Config(object):
 
         self.templates = ['a picture of {}']
         self.classnames = ['ground', 'building', 'tree', 'human', 'car', 'bus', 'bicycle', 'truck', 'traffic sign', 'sky']
-        self.clip_weight = '/root/RN50.pt'
+        self.clip_weight = 'RN50.pt'
         
         self.seg_lambda = 1e2
         self.contrast_lambda = 1e-3

@@ -36,7 +36,7 @@ def parse():
     MODEL_DIR = 'output/'+strftime("%y%m%d-%H%M", localtime())
 
     parser.add_argument('--work-dir', type=str, default=MODEL_DIR, help='the dir to save logs and models')
-    parser.add_argument ('--local_rank', type=int, default=0)
+    parser.add_argument ('--local-rank', type=int, default=0)
     args = parser.parse_args()
     
     if args.local_rank == 0 and not os.path.exists(MODEL_DIR): os.mkdir(MODEL_DIR)
@@ -99,12 +99,12 @@ def main():
     batchsize = cfg.onegpu 
     args.epoch_length = int(cfg.iter_per_epoch / (num_gpus*batchsize))
 
-    traindataset = CityPersons(path=cfg.root_path, type='train', config=cfg)
+    traindataset = TJU(path=cfg.root_path, split='train', config=cfg)
     datasampler = DistributedSampler(dataset = traindataset)
     trainloader = DataLoader(traindataset, sampler=datasampler, batch_size=batchsize, shuffle=False, num_workers=10)
 
     if cfg.val and local_rank==0:
-        testdataset = CityPersons(path=cfg.root_path, type='val', config=cfg)
+        testdataset = TJU(path=cfg.root_path, split='val', config=cfg)
         testloader = DataLoader(testdataset, batch_size=1, num_workers=4)
 
     cfg.ckpt_path = args.work_dir
