@@ -28,7 +28,7 @@ class Config(object):
         # setting for data augmentation
         self.use_horizontal_flips = True
         self.brightness = (0.5, 2, 0.5)
-        self.size_train = (750, 1015)
+        self.size_train = (640, 866) # (800, 1120)
         self.size_test = (1200, 1624)    
 
         # image channel-wise mean to subtract, the order is BGR
