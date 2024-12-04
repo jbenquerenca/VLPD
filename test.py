@@ -25,6 +25,7 @@ def parse():
         help='path to save detection results in json format (city) or txt file folder (caltech)')
     parser.add_argument('--dataset', default='city', type=str, metavar='DATASET',
         help='dataset to choose, including CityPersons (city) and Caltech (caltech)')
+    parser.add_argument('--results_file')
     args = parser.parse_args()
     return args
 
@@ -205,6 +206,8 @@ def val_tju(testloader, net, config, args):
     MRs = validate('data/TJU-DHD-Traffic/annotations/test.json', temp_val)
     print('\nSummerize:[Reasonable: %.2f%%], [Reasonable_small: %.2f%%], [Reasonable_occ=heavy: %.2f%%], [All: %.2f%%]'
           % (MRs[0]*100, MRs[1]*100, MRs[2]*100, MRs[3]*100))
+    if args.results_file:
+        with open(args.results_file, "w") as f: json.dump({"reasonable":MRs[0], "reasonable_small":MRs[1], "reasonable_occ":MRs[2], "all":MRs[3]})
     if is_inference:
         FPS = int(num_images / inference_time)
         print('FPS : {}'.format(FPS))
