@@ -1,4 +1,4 @@
-# VLPD codebase does not use the real id of the images but instead the position they come in the annotation file
+# VLPD codebase does not use the real id of the images but instead the position they come in in the annotation file
 import json, os
 with open(os.path.join("data/TJU-DHD-Traffic/annotations", "val.json")) as f: test = json.load(f)
 imid_map = dict()

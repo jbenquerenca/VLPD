@@ -319,10 +319,9 @@ def val(testloader, net, config: Config, args, epoch, teacher_dict=None):
         print('\nLoad back student params')
         net.module.load_state_dict(student_dict)
     temp_val = os.path.join(config.ckpt_path, f'VLPD-{epoch+1}.json')
-    with open(temp_val, 'w') as f:
-        json.dump(res, f)
-
-    MRs = validate('./eval_city/val_gt.json', temp_val)
+    with open(temp_val, 'w') as f: json.dump(res, f)
+    if not res: return [1.0, 1.0, 1.0, 1.0] # no detections, so miss rate=100%
+    MRs = validate('data/TJU-DHD-Traffic/annotations/val.json', temp_val)
     t4 = time.time()
     print('Summerize: [Reasonable: %.2f%%], [Reasonable_small: %.2f%%], [Reasonable_occ=heavy: %.2f%%], [All: %.2f%%]'
           % (MRs[0]*100, MRs[1]*100, MRs[2]*100, MRs[3]*100))
