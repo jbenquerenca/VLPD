@@ -57,7 +57,7 @@ def main():
         testdataset = TJU(path=cfg.root_path, split='test', config=cfg)
         testloader = DataLoader(testdataset, batch_size=1, num_workers=4)
         val_tju(testloader, net, cfg, args)
-    if args.dataset == 'city':
+    elif args.dataset == 'city':
         testdataset = CityPersons(path=cfg.root_path, type='val', config=cfg)
         testloader = DataLoader(testdataset, batch_size=1, num_workers=4)
         val_city(testloader, net, cfg, args)
@@ -207,7 +207,7 @@ def val_tju(testloader, net, config, args):
     print('\nSummerize:[Reasonable: %.2f%%], [Reasonable_small: %.2f%%], [Reasonable_occ=heavy: %.2f%%], [All: %.2f%%]'
           % (MRs[0]*100, MRs[1]*100, MRs[2]*100, MRs[3]*100))
     if args.results_file:
-        with open(args.results_file, "w") as f: json.dump({"reasonable":MRs[0], "reasonable_small":MRs[1], "reasonable_occ":MRs[2], "all":MRs[3]})
+        with open(args.results_file, "w") as f: json.dump({"reasonable":MRs[0], "reasonable_small":MRs[1], "reasonable_occ":MRs[2], "all":MRs[3]}, f)
     if is_inference:
         FPS = int(num_images / inference_time)
         print('FPS : {}'.format(FPS))
