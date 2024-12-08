@@ -81,7 +81,7 @@ def get_tju(root_dir='data/tju', split='train'):
     box_count = 0
     with open(anno_path) as f: anno_data = json.load(f)
     for im in anno_data["images"]: 
-        image_data[im["id"]] = dict(filepath=os.path.join(all_img_path, im["file_name"]), bboxes=list(), ignoreareas=list())
+        image_data[im["id"]] = dict(image_id=im["id"], filepath=os.path.join(all_img_path, im["file_name"]), bboxes=list(), ignoreareas=list())
     for anno in anno_data["annotations"]:
         bbox = list(map(int, anno["bbox"]))
         bbox = np.array([bbox[0], bbox[1], bbox[0]+bbox[2], bbox[1]+bbox[3]])

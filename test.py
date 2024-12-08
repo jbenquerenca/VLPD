@@ -17,6 +17,13 @@ import json
 import argparse
 import pdb
 
+torch.multiprocessing.set_sharing_strategy('file_system') # hack
+'''
+RuntimeError: Too many open files. Communication with the workers is no longer possible. 
+Please increase the limit using `ulimit -n` in the shell or change the sharing strategy by calling 
+`torch.multiprocessing.set_sharing_strategy('file_system')` at the beginning of your code
+'''
+
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('--val-path', default='', type=str, metavar='VAL_PATH', 
@@ -54,7 +61,7 @@ def main():
     print('Dataset...')
 
     if args.dataset == 'tju':
-        testdataset = TJU(path=cfg.root_path, split='test', config=cfg)
+        testdataset = TJU(path=cfg.root_path, split='val', config=cfg)
         testloader = DataLoader(testdataset, batch_size=1, num_workers=4)
         val_tju(testloader, net, cfg, args)
     elif args.dataset == 'city':
@@ -176,7 +183,7 @@ def val_tju(testloader, net, config, args):
         res = []
         inference_time = 0
         num_images = len(testloader)
-        for i, data in enumerate(testloader):
+        for i, (data, im_id) in enumerate(testloader):
             inputs = data.cuda()
             with torch.no_grad():
                 t1 = time.time()
@@ -191,7 +198,7 @@ def val_tju(testloader, net, config, args):
                 boxes[:, [2, 3]] -= boxes[:, [0, 1]]
                 for box in boxes:
                     temp = dict()
-                    temp['image_id'] = i+1
+                    temp['image_id'] = int(im_id[0]) # *** WARNING: batch size for evaluation is always 1
                     temp['category_id'] = 1
                     temp['bbox'] = box[:4].tolist()
                     temp['score'] = float(box[4])
@@ -203,7 +210,7 @@ def val_tju(testloader, net, config, args):
         with open(temp_val, 'w') as f:
             json.dump(res, f)
 
-    MRs = validate('data/TJU-DHD-Traffic/annotations/test.json', temp_val)
+    MRs = validate('data/TJU-DHD-Traffic/annotations/val.json', temp_val)
     print('\nSummerize:[Reasonable: %.2f%%], [Reasonable_small: %.2f%%], [Reasonable_occ=heavy: %.2f%%], [All: %.2f%%]'
           % (MRs[0]*100, MRs[1]*100, MRs[2]*100, MRs[3]*100))
     if args.results_file:

@@ -184,5 +184,5 @@ class TJU(Dataset):
             x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
             x_img = (x_img - self.config.norm_mean) / self.config.norm_std
             x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
-            return x_img
+            return x_img, img_data["image_id"]
     def __len__(self): return self.dataset_len
