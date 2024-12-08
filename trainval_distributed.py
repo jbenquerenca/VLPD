@@ -36,7 +36,7 @@ def parse():
     MODEL_DIR = 'output/'+strftime("%y%m%d-%H%M", localtime())
 
     parser.add_argument('--work-dir', type=str, default=MODEL_DIR, help='the dir to save logs and models')
-    parser.add_argument ('--local-rank', type=int, default=0)
+    parser.add_argument ('--local_rank', type=int, default=0)
     args = parser.parse_args()
     
     if args.local_rank == 0 and not os.path.exists(MODEL_DIR): os.mkdir(MODEL_DIR)
@@ -295,7 +295,7 @@ def val(testloader, net, config: Config, args, epoch, teacher_dict=None):
     print('Perform validation...')
     res = []
     t3 = time.time()
-    for i, data in enumerate(testloader):
+    for i, (data, im_id) in enumerate(testloader):
         inputs = data.cuda()
         with torch.no_grad():
             results = net(inputs, is_train=False)
@@ -306,7 +306,7 @@ def val(testloader, net, config: Config, args, epoch, teacher_dict=None):
             boxes[:, [2, 3]] -= boxes[:, [0, 1]]
             for box in boxes:
                 temp = dict()
-                temp['image_id'] = i+1
+                temp['image_id'] = int(im_id[0])
                 temp['category_id'] = 1
                 temp['bbox'] = box[:4].tolist()
                 temp['score'] = float(box[4])

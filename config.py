@@ -12,7 +12,7 @@ class Config(object):
         self.gen_seed = False
         
         # training config
-        self.onegpu = 4
+        self.onegpu = 16 
         self.num_epochs = 300
         self.add_epoch = 0
         self.iter_per_epoch = 2000 
@@ -38,9 +38,9 @@ class Config(object):
         self.log_freq = 20
         # whether or not to perform validation during training
         self.val = True
-        self.val_frequency = 2
-        self.val_begin = 70
-        self.save_begin = 200
+        self.val_frequency = 1
+        self.val_begin = 10
+        self.save_begin = 10
         self.save_end = 260
         
         self.score_map = True
