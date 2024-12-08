@@ -13,10 +13,10 @@ class Config(object):
         
         # training config
         self.onegpu = 16 
-        self.num_epochs = 300
+        self.num_epochs = 200
         self.add_epoch = 0
         self.iter_per_epoch = 2000 
-        self.init_lr = 2e-4
+        self.init_lr = 1e-4
         self.lr_policy = 'step'     #  or cyclic for SWA
         self.lr_step = [350]       #  no step
         self.warm_up = 3
@@ -38,10 +38,10 @@ class Config(object):
         self.log_freq = 20
         # whether or not to perform validation during training
         self.val = True
-        self.val_frequency = 1
-        self.val_begin = 10
-        self.save_begin = 10
-        self.save_end = 260
+        self.val_frequency = 2
+        self.val_begin = 70
+        self.save_begin = 150
+        self.save_end = 200
         
         self.score_map = True
         # whether ot not to use the strategy of weight moving average following CSP
