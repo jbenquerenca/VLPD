@@ -192,8 +192,7 @@ def val_tju(testloader, net, config, args):
                 t2 = time.time()
                 inference_time += (t2 - t1)
 
-            boxes = parse_det_offset(pos.cpu().numpy(), height.cpu().numpy(), offset.cpu().numpy(), 
-                                config.size_test, score=0.1, down=4, nms_thresh=0.5)
+            boxes = parse_det_offset(pos.cpu().numpy(), height.cpu().numpy(), offset.cpu().numpy(), config.size_test, score=0.1, down=4, nms_thresh=0.5, original_size=(1200, 1624))
             if len(boxes) > 0:
                 boxes[:, [2, 3]] -= boxes[:, [0, 1]]
                 for box in boxes:

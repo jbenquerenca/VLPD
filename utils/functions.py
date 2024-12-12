@@ -16,7 +16,7 @@ def vis_detections(im, class_det, w=None):
         cv2.imwrite(w, im)
 
 
-def parse_det_offset(pos, height, offset, size, score=0.1, down=4, nms_thresh=0.3):
+def parse_det_offset(pos, height, offset, size, score=0.1, down=4, nms_thresh=0.3, original_size=None):
     pos = np.squeeze(pos)
     height = np.squeeze(height)
     offset_y = offset[0, 0, :, :]
@@ -35,4 +35,13 @@ def parse_det_offset(pos, height, offset, size, score=0.1, down=4, nms_thresh=0.
         boxs = np.asarray(boxs, dtype=np.float32)
         keep = nms(boxs, nms_thresh, usegpu=False, gpu_id=0)
         boxs = boxs[keep, :]
+        if original_size: # the image size used for testing is different than the image size of the dataset
+            scale_x = original_size[1] / size[1]  # Scale for width (original_width / network_width)
+            scale_y = original_size[0] / size[0]  # Scale for height (original_height / network_height)
+
+            # Rescale bounding boxes to original image dimensions
+            boxs[:, 0] *= scale_x  # Scale x1
+            boxs[:, 2] *= scale_x  # Scale x2
+            boxs[:, 1] *= scale_y  # Scale y1
+            boxs[:, 3] *= scale_y  # Scale y2
     return boxs
